@@ -2,9 +2,27 @@
 <html>
 <head>
 <title>Untitled</title>
-<link rel="stylesheet" type="text/css" href="my.css">
+<style type="text/css">
+    .block {
+        float: left;
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        margin: 10px;
+    }
+</style>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script>
+var socket = io.connect('http://localhost:8080');
+
+socket.on('state', function (state) {
+    console.log(state);
+});
+</script>
 </head>
 <body>
-    <h1>test</h1>
+    <div class="block" id="b1"></div>
+    <div class="block" id="b2"></div>
 </body>
 </html>
