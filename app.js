@@ -2,16 +2,21 @@ var app = require('express')()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server);
 
-server.listen(process.env.PORT, process.env.IP);
+server.listen(8080, process.env.IP);
 
 // routing
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-var state = [1, 0];
+var state = [true, false];
 
 io.sockets.on('connection', function (socket) {
-    io.sockets.emit('state', state);
-   
+    socket.emit('state', state);
+
+    socket.on('updateState', function (localState) {
+        state = localState;
+        io.sockets.emit('state', state);
+    });
+
 });

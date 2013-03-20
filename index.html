@@ -14,15 +14,38 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script>
+var elements = [$("#b1"), $("#b2")];
 var socket = io.connect('http://localhost:8080');
 
+var localState;
 socket.on('state', function (state) {
-    console.log(state);
+    localState = state;
+    $(state).each(function(index) {
+        var ele = $(".block")[index];
+
+        console.log(ele);
+        console.log(state[index]);
+        if (state[index]) {
+            $(ele).css("background-color", "green");
+        }
+        else
+        {
+            $(ele).css("background-color", "red");
+        }
+    });
+});
+
+$(function() {
+   $(".block").click(function() {
+      console.log(this);
+      localState[this.id] = !localState[this.id];
+      socket.emit("updateState", localState);
+   });
 });
 </script>
 </head>
 <body>
-    <div class="block" id="b1"></div>
-    <div class="block" id="b2"></div>
+    <div class="block" id="0"></div>
+    <div class="block" id="1"></div>
 </body>
 </html>
