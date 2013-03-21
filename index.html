@@ -3,7 +3,7 @@
 <head>
 <title>Untitled</title>
 <style type="text/css">
-    .block {
+    .board td {
         float: left;
         width: 100px;
         height: 100px;
@@ -18,11 +18,9 @@
 
 var b = new Board();
 b.initialize();
-console.log(b.getState());
-
 
 $(function() {
-   $(".block").click(function() {
+   $(".board td").click(function() {
         b.toggle(this.id);
    });
 });
@@ -30,7 +28,22 @@ $(function() {
 </script>
 </head>
 <body>
-    <div class="block" id="0"></div>
-    <div class="block" id="1"></div>
+    <table class="board">
+        <tr>
+            <td id="0"></td>
+            <td id="1"></td>
+            <td id="2"></td>
+        </tr>
+        <tr>
+            <td id="3"></td>
+            <td id="4"></td>
+            <td id="5"></td>
+        </tr>
+        <tr>
+            <td id="6"></td>
+            <td id="7"></td>
+            <td id="8"></td>
+        </tr>
+    </table>
 </body>
 </html>

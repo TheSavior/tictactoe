@@ -16,7 +16,8 @@ app.get('/', function (req, res) {
 });
 app.use("/scripts", express.static(__dirname + '/scripts'));
 
-var state = [true, false];
+// Initialize our board of 9 spots
+var state = ["", "", "", "", "", "", "", "", ""];
 
 io.sockets.on('connection', function (socket) {
     socket.emit('state', state);
