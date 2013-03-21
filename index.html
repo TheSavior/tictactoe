@@ -13,35 +13,20 @@
 </style>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="/scripts/board.js"></script>
 <script>
-var elements = [$("#b1"), $("#b2")];
-var socket = io.connect('http://localhost:8080');
 
-var localState;
-socket.on('state', function (state) {
-    localState = state;
-    $(state).each(function(index) {
-        var ele = $(".block")[index];
+var b = new Board();
+b.initialize();
+console.log(b.getState());
 
-        console.log(ele);
-        console.log(state[index]);
-        if (state[index]) {
-            $(ele).css("background-color", "green");
-        }
-        else
-        {
-            $(ele).css("background-color", "red");
-        }
-    });
-});
 
 $(function() {
    $(".block").click(function() {
-      console.log(this);
-      localState[this.id] = !localState[this.id];
-      socket.emit("updateState", localState);
+        b.toggle(this.id);
    });
 });
+
 </script>
 </head>
 <body>
