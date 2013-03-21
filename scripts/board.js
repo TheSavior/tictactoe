@@ -11,25 +11,25 @@ function Board() {
 		});
 
 		socket.on('stateChange', function(index, state) {
-			this.toggle(index, state);
+			set(index, state);
 		});
 	};
 
+	// called when a piece is clicked on
 	this.toggle = function(index, state) {
 		if (!state) state = flip(localState[index]);
+		set(index, state);
+		savePiece(index, state);
+	};
 
+	function savePiece(index, state) {
+		socket.emit("updatePiece", index, state);
+	}
+
+	function set(index, state) {
 		localState[index] = state;
-		render();
-		this.save();
-	};
-
-	this.getState = function() {
-		return localState;
-	};
-
-	this.save = function() {
-		socket.emit("updateState", localState);
-	};
+		render();	
+	}
 
 	function render() {
 		$(localState).each(function(index) {
@@ -41,11 +41,10 @@ function Board() {
 			} else if (text == "o") {
 				$(ele).css("background-color", "red");
 			}
-			console.log(ele);
 		});
 	}
 
-	// Returns the opposite state given
+	// Helper to get the opposite state of what's given
 
 	function flip(state) {
 		if (state == "x") return "o";
