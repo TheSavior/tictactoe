@@ -11,7 +11,7 @@ function Board() {
 	this.initialize = function() {
 		var turnEle = $("#whoseTurn")[0];
 
-		socket = io.connect('http://localhost:8080');
+		socket = io.connect('/');
 
 		socket.on('state', function(state) {
 			localState = state;
