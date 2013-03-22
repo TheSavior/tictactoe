@@ -21,7 +21,7 @@ b.initialize();
 
 $(function() {
    $(".board td").click(function() {
-        b.clickPiece(this.id);
+        b.clickPiece(this);
    });
 });
 
@@ -30,20 +30,21 @@ $(function() {
 <body>
     <table class="board">
         <tr>
-            <td id="0"></td>
-            <td id="1"></td>
-            <td id="2"></td>
+            <td data-row="0" data-col="0"></td>
+            <td data-row="0" data-col="1"></td>
+            <td data-row="0" data-col="2"></td>
         </tr>
         <tr>
-            <td id="3"></td>
-            <td id="4"></td>
-            <td id="5"></td>
+            <td data-row="1" data-col="0"></td>
+            <td data-row="1" data-col="1"></td>
+            <td data-row="1" data-col="2"></td>
         </tr>
         <tr>
-            <td id="6"></td>
-            <td id="7"></td>
-            <td id="8"></td>
+            <td data-row="2" data-col="0"></td>
+            <td data-row="2" data-col="1"></td>
+            <td data-row="2" data-col="2"></td>
         </tr>
     </table>
+    <p id="whoseTurn"></p>
 </body>
 </html>

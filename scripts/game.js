@@ -3,7 +3,11 @@ function Game() {
 	var player2;
 
 	// Initialize our board of 9 spots
-	var state = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+	var state = [
+				[0, 0, 0],
+				[0, 0, 0],
+				[0, 0, 0]
+				];
 
 	var playersTurn = 1;
 
@@ -18,15 +22,18 @@ function Game() {
 
 			socket.emit('state', state);
 
-			socket.on('updatePiece', function(index, playerNum) {
+			socket.on('updatePiece', function(row, col, playerNum) {
+				console.log("::::::::::::::::::::::::::::");
+				console.log("Updating r:"+row+", col:"+col);
 				// If that spot hasn't been claimed, and it's the given players turn
-				if (state[index] === 0 && playersTurn == playerNum) {
-					state[index] = playerNum;
-					socket.broadcast.emit('stateChange', index, playerNum);
+				if (state[row][col] === 0 && playersTurn == playerNum) {
+					state[row][col] = playerNum;
+					socket.broadcast.emit('stateChange', row, col, playerNum);
 
 					if (playersTurn == 1) playersTurn = 2;
 					else playersTurn = 1;
 
+					parent.isGameOver();
 					io.sockets.emit('playersTurn', playersTurn);
 				}
 			});
@@ -39,6 +46,13 @@ function Game() {
 		});
 	};
 
+	this.isGameOver = function() {
+		console.log("------------------------------");
+		console.log("checking if game is over");
+		console.log("------------------------------");
+
+	}
+
 	var lastPlayer = 2;
 	// Take a socket and set that to be one of the players
 	this.setPlayer = function(socket) {
@@ -50,8 +64,7 @@ function Game() {
 			socket.emit("player", 2);
 		}
 
-		if (lastPlayer == 1)
-			lastPlayer = 2;
+		if (lastPlayer == 1) lastPlayer = 2;
 		else lastPlayer = 1;
 
 		/*

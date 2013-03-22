@@ -1,4 +1,6 @@
 function Board() {
+	"use strict";
+
 	var socket;
 	var localState;
 
@@ -7,6 +9,8 @@ function Board() {
 	var playersTurn = 1;
 
 	this.initialize = function() {
+		var turnEle = $("#whoseTurn")[0];
+
 		socket = io.connect('http://localhost:8080');
 
 		socket.on('state', function(state) {
@@ -14,8 +18,8 @@ function Board() {
 			render();
 		});
 
-		socket.on('stateChange', function(index, state) {
-			set(index, state);
+		socket.on('stateChange', function(row, col, state) {
+			set(row, col, state);
 		});
 
 		socket.on('player', function(number) {
@@ -25,42 +29,54 @@ function Board() {
 
 		socket.on('playersTurn', function(psTurn) {
 			playersTurn = psTurn;
+
+			var turnEle = $("#whoseTurn")[0];
+			var text = "";
 			if (playersTurn == playerNum) {
-				console.log("It's your turn!");
+				text = "It's your turn!";
 			} else {
-				console.log("It's player " + playersTurn + "'s turn!");
+				text = "It's player " + playersTurn + "'s turn!";
 			}
+
+			$(turnEle).text(text);
+			console.log(text);
 		});
 	};
 
 	// called when a piece is clicked on
-	this.clickPiece = function(index) {
+	this.clickPiece = function(ele) {
+		var row = $(ele).data("row");
+		var col = $(ele).data("col");
+
 		// If that spot hasn't been claimed
-		if (localState[index] === 0 && playersTurn == playerNum) {
-			set(index, playerNum);
-			savePiece(index, playerNum);
+		if (localState[row][col] === 0 && playersTurn == playerNum) {
+			set(row, col, playerNum);
+			savePiece(row, col, playerNum);
 		}
 	};
 
-	function savePiece(index, playerNum) {
-		socket.emit("updatePiece", index, playerNum);
+	function savePiece(row, col, playerNum) {
+		socket.emit("updatePiece", row, col, playerNum);
 	}
 
-	function set(index, playerNum) {
-		localState[index] = playerNum;
+	function set(row, col, playerNum) {
+		localState[row][col] = playerNum;
 		render();
 	}
 
 	function render() {
-		$(localState).each(function(index) {
-			var ele = $(".board td")[index];
+		$(localState).each(function(row) {
+			$(localState[row]).each(function(col) {
+				var ele = $("*[data-row=" + row + "][data-col=" + col + "]").first();
 
-			var text = localState[index];
-			if (text == 1) {
-				$(ele).css("background-color", "green");
-			} else if (text == 2) {
-				$(ele).css("background-color", "red");
-			}
+				var text = localState[row][col];
+				if (text == 1) {
+					$(ele).css("background-color", "green");
+				} else if (text == 2) {
+					$(ele).css("background-color", "red");
+				}
+
+			});
 		});
 	}
 }
