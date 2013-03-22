@@ -10,7 +10,7 @@ io.configure(function() {
 });
 
 
-server.listen(8080, process.env.IP);
+server.listen(process.env.PORT || 8080, process.env.IP);
 
 // routing
 app.get('/', function(req, res) {
