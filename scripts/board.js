@@ -17,15 +17,18 @@ function Board() {
 		});
 
 		socket.on('player', function(number) {
-			console.log("Player: "+number);
+			console.log("Player: " + number);
 			playerNum = number;
 		});
 	};
 
 	// called when a piece is clicked on
 	this.clickPiece = function(index) {
-		set(index, playerNum);
-		savePiece(index, playerNum);
+		// If that spot hasn't been claimed
+		if (localState[index] === 0) {
+			set(index, playerNum);
+			savePiece(index, playerNum);
+		}
 	};
 
 	function savePiece(index, playerNum) {
