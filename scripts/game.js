@@ -4,16 +4,15 @@ function Game() {
 
 	// Initialize our board of 9 spots
 	var state = [
-				[0, 0, 0],
-				[0, 0, 0],
-				[0, 0, 0]
-				];
+		[0, 0, 0],
+		[0, 0, 0],
+		[0, 0, 0]
+	];
 
 	var playersTurn = 1;
 
 	this.initialize = function(io) {
 		var parent = this;
-
 		io.sockets.on('connection', function(socket) {
 			console.log("==============================Player connected");
 			parent.setPlayer(socket);
@@ -24,7 +23,7 @@ function Game() {
 
 			socket.on('updatePiece', function(row, col, playerNum) {
 				console.log("::::::::::::::::::::::::::::");
-				console.log("Updating r:"+row+", col:"+col);
+				console.log("Updating r:" + row + ", col:" + col);
 				// If that spot hasn't been claimed, and it's the given players turn
 				if (state[row][col] === 0 && playersTurn == playerNum) {
 					state[row][col] = playerNum;
@@ -33,7 +32,11 @@ function Game() {
 					if (playersTurn == 1) playersTurn = 2;
 					else playersTurn = 1;
 
-					parent.isGameOver();
+					if (parent.isGameOver(row, col, playerNum)) {
+						console.log("------------------------------");
+						console.log("GAME IS OVER!!!");
+						console.log("------------------------------");
+					}
 					io.sockets.emit('playersTurn', playersTurn);
 				}
 			});
@@ -46,12 +49,73 @@ function Game() {
 		});
 	};
 
-	this.isGameOver = function() {
+	// Given that playerNum just went at row/col, did it end the game?
+	this.isGameOver = function(row, col, playerNum) {
 		console.log("------------------------------");
 		console.log("checking if game is over");
 		console.log("------------------------------");
 
-	}
+
+		// Algorithm taken from http://stackoverflow.com/questions/1056316/algorithm-for-determining-tic-tac-toe-game-over-java
+		var n = state.length;
+		// check row
+		for (var i = 0; i < n; i++) {
+			if (state[row][i] != playerNum) {
+				break;
+			}
+
+			if (i == n - 1) {
+				return true;
+			}
+		}
+
+		// check col
+		for (i = 0; i < n; i++) {
+			if (state[i][col] != playerNum) {
+				break;
+			}
+
+			if (i == n - 1) {
+				return true;
+			}
+		}
+
+		if (row == col) {
+			//we're on a diagonal
+			for (i = 0; i < n; i++) {
+				if (state[i][i] != playerNum) {
+					break;
+				}
+
+				if (i == n - 1) {
+					return true;
+				}
+			}
+		}
+
+		//check anti diag (thanks rampion)
+		for (i = 0; i < n; i++) {
+			if (state[i][(n - 1) - i] != playerNum) {
+				break;
+			}
+
+			if (i == n - 1) {
+				return true;
+			}
+		}
+
+		// Is every spot taken?
+		for (i = 0; i < n; i++) {
+			for (var j = 0; j < n; j++) {
+				if (state[i][j] === 0) {
+					return false;
+				}
+			}
+		}
+
+		// Every piece is taken.
+		return true;
+	};
 
 	var lastPlayer = 2;
 	// Take a socket and set that to be one of the players
