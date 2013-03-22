@@ -2,6 +2,8 @@ function Board() {
 	var socket;
 	var localState;
 
+	var playerNum;
+
 	this.initialize = function() {
 		socket = io.connect('http://localhost:8080');
 
@@ -13,22 +15,26 @@ function Board() {
 		socket.on('stateChange', function(index, state) {
 			set(index, state);
 		});
+
+		socket.on('player', function(number) {
+			console.log("Player: "+number);
+			playerNum = number;
+		});
 	};
 
 	// called when a piece is clicked on
-	this.toggle = function(index, state) {
-		if (!state) state = flip(localState[index]);
-		set(index, state);
-		savePiece(index, state);
+	this.clickPiece = function(index) {
+		set(index, playerNum);
+		savePiece(index, playerNum);
 	};
 
-	function savePiece(index, state) {
-		socket.emit("updatePiece", index, state);
+	function savePiece(index, playerNum) {
+		socket.emit("updatePiece", index, playerNum);
 	}
 
-	function set(index, state) {
-		localState[index] = state;
-		render();	
+	function set(index, playerNum) {
+		localState[index] = playerNum;
+		render();
 	}
 
 	function render() {
@@ -36,18 +42,11 @@ function Board() {
 			var ele = $(".board td")[index];
 
 			var text = localState[index];
-			if (text == "x") {
+			if (text == 1) {
 				$(ele).css("background-color", "green");
-			} else if (text == "o") {
+			} else if (text == 2) {
 				$(ele).css("background-color", "red");
 			}
 		});
-	}
-
-	// Helper to get the opposite state of what's given
-
-	function flip(state) {
-		if (state == "x") return "o";
-		else return "x";
 	}
 }
