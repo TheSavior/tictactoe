@@ -4,6 +4,8 @@ function Board() {
 
 	var playerNum;
 
+	var playersTurn = 1;
+
 	this.initialize = function() {
 		socket = io.connect('http://localhost:8080');
 
@@ -20,12 +22,21 @@ function Board() {
 			console.log("Player: " + number);
 			playerNum = number;
 		});
+
+		socket.on('playersTurn', function(psTurn) {
+			playersTurn = psTurn;
+			if (playersTurn == playerNum) {
+				console.log("It's your turn!");
+			} else {
+				console.log("It's player " + playersTurn + "'s turn!");
+			}
+		});
 	};
 
 	// called when a piece is clicked on
 	this.clickPiece = function(index) {
 		// If that spot hasn't been claimed
-		if (localState[index] === 0) {
+		if (localState[index] === 0 && playersTurn == playerNum) {
 			set(index, playerNum);
 			savePiece(index, playerNum);
 		}
