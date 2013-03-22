@@ -36,8 +36,10 @@ function Game() {
 						console.log("------------------------------");
 						console.log("GAME IS OVER!!!");
 						console.log("------------------------------");
+						io.sockets.emit("gameOver", playerNum);
+					} else {
+						io.sockets.emit('playersTurn', playersTurn);
 					}
-					io.sockets.emit('playersTurn', playersTurn);
 				}
 			});
 

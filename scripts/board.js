@@ -41,6 +41,19 @@ function Board() {
 			$(turnEle).text(text);
 			console.log(text);
 		});
+
+		socket.on('gameOver', function(winnerNum) {
+			var turnEle = $("#whoseTurn")[0];
+			var text;
+			if (winnerNum == playerNum) {
+				text = "You Win!";
+			} else {
+				text = "You lose!";
+			}
+
+			$(turnEle).text(text);
+			console.log(text);
+		});
 	};
 
 	// called when a piece is clicked on
