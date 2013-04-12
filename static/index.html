@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tri-Towers</title>
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"></style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script data-main="scripts/main" src="scripts/require-jquery.js"></script>
+</head>
+<body>
+    <table class="board" data-bind="foreach: board.board">
+        <tr data-bind="foreach: $data">
+            <td data-bind="css: type, click: $root.clickPiece"></td>
+        </tr>
+    </table>
+
+    <hr />
+    <p data-bind="text: state"></p>
+    <hr />
+    <button data-bind="click: newGame">New Game</button>
+</body>
+</html>

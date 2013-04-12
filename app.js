@@ -1,22 +1,25 @@
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-var Game = require(__dirname +'/scripts/game.js');
+var requirejs = require('requirejs');
 
-io.configure(function() {
-	io.set("transports", ["xhr-polling"]);
-	io.set("polling duration", 10);
+requirejs.config({
+	baseUrl: "./scripts",
+	//Pass the top-level main.js/index.js require
+	//function to requirejs so that node modules
+	//are loaded relative to the top-level JS file.
+	nodeRequire: require
 });
 
+requirejs(['express', 'http', 'socket.io', 'game'], function(express, http, socket, Game) {
+	var app = express();
+	var server = http.createServer(app);
+	var io = socket.listen(server);
 
-server.listen(process.env.PORT || 8080, process.env.IP);
+	server.listen(process.env.PORT || 8081, process.env.IP);
 
-// routing
-app.get('/', function(req, res) {
-	res.sendfile(__dirname + '/index.html');
+	app.use(express.static(__dirname + '/static'));
+	app.use(express.logger());
+
+	console.log('Server running');
+
+	var game = new Game();
+	game.initialize(io);
 });
-app.use("/scripts", express.static(__dirname + '/scripts'));
-
-var game = new Game();
-game.initialize(io);
