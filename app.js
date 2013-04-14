@@ -13,6 +13,11 @@ requirejs(['express', 'http', 'socket.io', 'game'], function(express, http, sock
 	var server = http.createServer(app);
 	var io = socket.listen(server);
 
+	io.configure(function() {
+		io.set("transports", ["xhr-polling"]);
+		io.set("polling duration", 10);
+	});
+
 	server.listen(process.env.PORT || 8081, process.env.IP);
 
 	app.use(express.static(__dirname + '/static'));
